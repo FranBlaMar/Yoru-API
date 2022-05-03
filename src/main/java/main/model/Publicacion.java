@@ -46,12 +46,12 @@ public class Publicacion {
 	@Column (name="likes")
 	private int likes;
 
-	public Publicacion(String titulo, byte[] imagen, User autor, int likes) {
+	public Publicacion(String titulo, byte[] imagen, User autor) {
 		super();
 		this.titulo = titulo;
 		this.imagen = imagen;
 		this.autor = autor;
-		this.likes = likes;
+		this.likes = 0;
 	}
 	
 	
