@@ -70,11 +70,11 @@ public class UserController {
 	    	User verificar = this.service.findById(user.getEmail());
 	    	if(verificar != null) {
 	    		throw new ExistingUserException();
-	    	}
+	    	}	
 	        String encodedPass = passwordEncoder.encode(user.getPassword());
-	        user.setPassword(encodedPass);
-	        user = this.service.saveUser(user);
-	        String token = jwtUtil.generateToken(user.getEmail());
+	        User usuarioNuevo = new User(user.getUserName(),encodedPass , user.getEmail(), "");
+	        usuarioNuevo = this.service.saveUser(usuarioNuevo);
+	        String token = jwtUtil.generateToken(usuarioNuevo.getEmail());
 	        return Collections.singletonMap("jwt_token", token);
 	    }
 

@@ -1,8 +1,12 @@
 package main.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,6 +51,8 @@ public class User {
 	@Column (name="num_publicaciones")
 	private Integer numeroPublicaciones;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Publicacion> publicaciones;
 	
 	
 	public User(String userName,String password, String email, String aboutMe){
