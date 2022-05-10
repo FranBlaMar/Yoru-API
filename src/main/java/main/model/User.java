@@ -1,5 +1,6 @@
 package main.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -39,6 +41,9 @@ public class User {
 	@Column (name="userName", nullable = false)
 	private String userName;
 	
+	@Column (name="fotoPerfil")
+	private Byte[] fotoPerfil;
+	
 	@Column (name="descripcion")
 	private String aboutMe;
 
@@ -51,7 +56,10 @@ public class User {
 	@Column (name="num_publicaciones")
 	private Integer numeroPublicaciones;
 	
+	
+	
 	@OneToMany(cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<Publicacion> publicaciones;
 	
 	
@@ -60,10 +68,13 @@ public class User {
 		this.password = password;
 		this.email = email;
 		this.aboutMe = aboutMe;
+		this.fotoPerfil = null;
 		this.numeroPublicaciones = 0;
 		this.numeroSeguidores = 0;
 		this.numeroSeguidos = 0;
 	}
 
-
+	public void anadirPublicacion(Publicacion publi) {
+		this.publicaciones.add(publi);
+	}
 }

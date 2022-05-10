@@ -1,5 +1,7 @@
 package main.model;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,12 +48,16 @@ public class Publicacion {
 	@Column (name="likes")
 	private int likes;
 
+	@Column (name="fechaPublicacion")
+	private LocalDate fechaPublicacion;
+	
 	public Publicacion(String titulo, byte[] imagen, User autor) {
 		super();
 		this.titulo = titulo;
 		this.imagen = imagen;
 		this.autor = autor;
 		this.likes = 0;
+		this.fechaPublicacion = LocalDate.now();
 	}
 	
 	
