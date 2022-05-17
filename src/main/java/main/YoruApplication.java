@@ -25,7 +25,7 @@ public class YoruApplication {
 	CommandLineRunner initData(UserRepository userRepository) {
 		return args -> {
 			
-			User us1 = new User("Yoru",encoder.encode("123"), "franbl98@gmail.com", "");
+			User us1 = new User("Yoru",encoder.encode("123"), "franbl98@gmail.com", "", null);
 			us1.setNumeroPublicaciones(0);
 			us1.setNumeroSeguidores(0);
 			us1.setNumeroSeguidos(0);

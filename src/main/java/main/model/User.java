@@ -1,12 +1,12 @@
 package main.model;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -42,7 +42,8 @@ public class User {
 	private String userName;
 	
 	@Column (name="fotoPerfil")
-	private Byte[] fotoPerfil;
+	@Lob
+	private byte[] fotoPerfil;
 	
 	@Column (name="descripcion")
 	private String aboutMe;
@@ -57,18 +58,24 @@ public class User {
 	private Integer numeroPublicaciones;
 	
 	
-	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<Publicacion> publicaciones;
 	
+	@OneToMany()
+	@JsonIgnore
+	private List<User> seguidores;
 	
-	public User(String userName,String password, String email, String aboutMe){
+	@OneToMany()
+	@JsonIgnore
+	private List<User> seguidos;
+	
+	public User(String userName,String password, String email, String aboutMe, byte[] fotoPerfil){
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
 		this.aboutMe = aboutMe;
-		this.fotoPerfil = null;
+		this.fotoPerfil = fotoPerfil;
 		this.numeroPublicaciones = 0;
 		this.numeroSeguidores = 0;
 		this.numeroSeguidos = 0;
