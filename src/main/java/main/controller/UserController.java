@@ -17,11 +17,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -121,6 +125,7 @@ public class UserController {
 	    }
 	    
 	    
+	    
 	    /**
 	     * Metodo para enviar un codigo de verificación al correo electronico
 	     * @param email Email del destinatario
@@ -128,10 +133,10 @@ public class UserController {
 	     * @throws MessagingException
 	     */
 	    @PostMapping("auth/verification")
-	    public int emailVerify(@RequestBody String email) throws MessagingException{
+	    public ResponseEntity<Integer> emailVerify(@RequestBody String email) throws MessagingException{
 
 	    	if(this.service.comprobarCorreo(email)) {
-				return this.serviceEmail.sendVerificationEmail(email);
+				return ResponseEntity.status(HttpStatus.CREATED).body(this.serviceEmail.sendVerificationEmail(email));
 	    	}
 	    	else {
 	    		throw new ExistingEmailException();
@@ -214,13 +219,13 @@ public class UserController {
 	     * @return Usuario al que pertenece el token de la cabecera de la petición
 	     */
 	    @GetMapping("/user")
-	    public User getUser() throws UserNotFoundEmailException{ 	
+	    public ResponseEntity<User> getUser() throws UserNotFoundEmailException{ 	
 	        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	        User us = this.service.findById(email);
 	        if(us == null) {
 	        	throw new UserNotFoundEmailException();
 	        }
-	        return this.service.findById(email);
+	        return ResponseEntity.status(HttpStatus.OK).body(this.service.findById(email));
 	    }
 	    
 	    
@@ -232,12 +237,71 @@ public class UserController {
 	     * @throws UsuarioNotFoundException
 	     */
 	    @GetMapping("/user/{userName}")
-	    public List<User> getUserPorUserName(@PathVariable String userName) throws UserNotFoundEmailException{ 	
+	    public ResponseEntity<List<User>> getUserPorUserName(@PathVariable String userName) throws UserNotFoundEmailException{ 	
 	        List<User> result = this.service.findByUserName(userName);
 	        if(result.isEmpty()) {
 	        	throw new UserNotFoundEmailException();
 	        }
-	        return result;
+	        return ResponseEntity.status(HttpStatus.OK).body(result);
+	    }
+	    
+	    /**
+	     * Método para editar un usuario
+	     * @param usuario usuario editado
+	     * @return el usuario editado
+	     */
+	    @PutMapping("/user")
+	    public ResponseEntity<User> putUser(@RequestBody User usuario) {
+	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.editarUsuario(usuario));
+	    }
+	    
+	    
+	    /**
+	     * Método que devuelve un usuario al que el usuario logueado sigue, mediante su email
+	     * @param comprobarSeguido Usuario que querems obtener
+	     * @return Usuario encontrado
+	     */
+	    @GetMapping("/user/follower/{usuarioComprobar}")
+	    public ResponseEntity<User> comprobarSiEsSeguidor(@PathVariable String usuarioComprobar){
+	    	 String usuarioLogueado = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	 if(this.service.findSeguido(usuarioLogueado, usuarioComprobar) == null) {
+	    		 throw new UserNotFoundEmailException();
+	    	 }
+	    	 return ResponseEntity.status(HttpStatus.OK).body(this.service.findSeguido(usuarioLogueado, usuarioComprobar));
+	    }
+	    
+	    /**
+	     * Método para obtener todos los usuarios seguidos por el usuario logueado
+	     * @return Lista de usuarios
+	     */
+	    @GetMapping("/user/follower")
+	    public ResponseEntity<List<User>> findAll(){
+	    	 String usuario = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	 
+	    	 return ResponseEntity.status(HttpStatus.OK).body(this.service.findAll(usuario));
+	    }
+	    
+	    /**
+	     * Método para seguir a un usuario
+	     * @param seguidor Usuario que ha empezado a seguir al otro
+	     * @param seguido El usuario al que el primer user ha empezado a seguir
+	     * @return El usuario que ha empezado a seguir
+	     */ 
+	    @PostMapping("/user/follower")
+	    public ResponseEntity<User> followUser(@RequestParam String seguido){
+	    	 String seguidor = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.seguirUsuario(seguidor, seguido));
+	    }
+	    
+	    /**
+	     * Método para dejar de seguir a un usuario
+	     * @param seguidor Usuario que ha dejado de seguir al otro
+	     * @param seguido El usuario al que han dejado de seguir
+	     * @return Usuario que ha dejado de seguir al otro
+	     */ 
+	    @DeleteMapping("/user/follower/{seguido}")
+	    public ResponseEntity<User> unfollowUser(@PathVariable String seguido){
+	    	 String seguidor = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.dejarDeSeguirUsuario(seguidor, seguido));
 	    }
 	    
 }

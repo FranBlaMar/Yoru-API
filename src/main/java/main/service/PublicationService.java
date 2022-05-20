@@ -59,4 +59,13 @@ public class PublicationService {
 		User us = this.userService.findById(email);
 		return this.repositorio.findByAutor(us);
 	}
+	
+	/**
+	 * Método para editar una publicación
+	 * @param publi publicacion editada
+	 * @return Publicacion editada
+	 */
+	public Publicacion editarPublicacion(Publicacion publi) {
+		return this.repositorio.save(publi);
+	}
 }

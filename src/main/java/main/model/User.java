@@ -10,6 +10,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -59,7 +60,7 @@ public class User {
 	
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JsonIgnore
+	@JsonBackReference
 	private List<Publicacion> publicaciones;
 	
 	@OneToMany()
@@ -70,11 +71,17 @@ public class User {
 	@JsonIgnore
 	private List<User> seguidos;
 	
+	
 	public User(String userName,String password, String email, String aboutMe, byte[] fotoPerfil){
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
-		this.aboutMe = aboutMe;
+		if(aboutMe.isBlank()) {
+			this.aboutMe = "¡Introduce una breve presentación!";
+		}
+		else {
+			this.aboutMe = aboutMe;	
+		}
 		this.fotoPerfil = fotoPerfil;
 		this.numeroPublicaciones = 0;
 		this.numeroSeguidores = 0;
@@ -83,5 +90,13 @@ public class User {
 
 	public void anadirPublicacion(Publicacion publi) {
 		this.publicaciones.add(publi);
+	}
+	
+	public void anadirSeguidor(User seguidor) {
+		this.seguidores.add(seguidor);
+	}
+	
+	public void anadirSeguido(User seguido) {
+		this.seguidos.add(seguido);
 	}
 }
