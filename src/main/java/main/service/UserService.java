@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-
+import main.model.Publicacion;
 import main.model.User;
 import main.repository.UserRepository;
 
@@ -26,7 +26,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired 
     private UserRepository repository;
-
+    @Autowired
+    private PublicationService servicio;
    
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
@@ -167,5 +168,47 @@ public class UserService implements UserDetailsService {
 
     	return result;
 
+    }
+    
+    /**
+     * Método para obtener las publicaciones gustadas de un usuario
+     * @param usuario usuario logueado
+     * @return Lista de publicaciones gustadas
+     */
+    public List<Publicacion> getPublicacionesgustadas(String usuario){
+    	User user = findById(usuario);
+    	return user.getPublicacionesGustadas();
+    }
+    
+    
+    /**
+     * Método para añadir una publicacion a la lista de publicaciones gustadas de un usuario
+     * @param usuario usuario que le ha gustado la publicacion
+     * @param publicacion publicacion a la que el usuario ha dado like
+     * @return La publicacion a la que han dado like
+     */
+    public Publicacion anadirPublicacionGustada(String usuario, Long publicacion) {
+    	User user = findById(usuario);
+    	Publicacion publi = this.servicio.findById(publicacion);
+    	publi.setLikes(publi.getLikes()+1);
+    	
+    	user.anadirPublicacionGustada(publi);
+    	this.repository.save(user);
+    	return publi;
+    }
+    
+    /**
+     * Método para borrar una publicacion de la lista de megustas de un usuario
+     * @param usuario Usuario al que ha dejado de gustarle la publicacion
+     * @param publicacion Publicacion que ha dejado de gustar
+     * @return La publicacion que ha dejado de gustar
+     */
+    public Publicacion eliminarPublicacionGustada(String usuario, Long publicacion) {
+    	User user = findById(usuario);
+    	Publicacion publi = this.servicio.findById(publicacion);
+    	publi.setLikes(publi.getLikes()-1);
+    	user.getPublicacionesGustadas().remove(publi);
+    	this.repository.save(user);
+    	return publi;
     }
 }

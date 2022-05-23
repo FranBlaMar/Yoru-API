@@ -5,13 +5,12 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.http.ResponseEntity;
 import javax.mail.MessagingException;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -35,8 +34,10 @@ import main.exception.ErrorManager;
 import main.exception.ExistingEmailException;
 import main.exception.ExistingUserException;
 import main.exception.FormatErrorException;
+import main.exception.PublicacionNotFoundException;
 import main.exception.UserNotFoundEmailException;
 import main.exception.UserNotFoundPasswordException;
+import main.model.Publicacion;
 import main.model.User;
 import main.model.UserLogin;
 import main.security.UtilJWT;
@@ -187,6 +188,20 @@ public class UserController {
 		}
 	    
 	    /**
+		 * Metodo handler de exception de publicacion no encontrada
+		 * @param ex excepción lanzada
+		 * @return Excepción modificada por nosotros
+		 */
+	    @ExceptionHandler(PublicacionNotFoundException.class)
+		public ResponseEntity<ErrorManager> handlePublicacionNoEncontrada(PublicacionNotFoundException ex) {
+			ErrorManager apiError = new ErrorManager();
+			apiError.setRequestStatus(HttpStatus.NOT_FOUND);
+			apiError.setDate(LocalDateTime.now());
+			apiError.setErrorMessage(ex.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+		}
+	    
+	    /**
 		 * Metodo handler de exception de usuario ya existente
 		 * @param ex excepción lanzada
 		 * @return Excepción modificada por nosotros
@@ -304,4 +319,47 @@ public class UserController {
 	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.dejarDeSeguirUsuario(seguidor, seguido));
 	    }
 	    
+	    
+	    /**
+	     * Método para añadir una publicacion a la lista de publicaciones gustadas de un usuario
+	     * @param publicacion id de lapublicacion a la que el usuario ha dado like
+	     * @return La publicacion a la que han dado like
+	     */
+	    @PostMapping("/user/publicacionesGustadas")
+	    public ResponseEntity<Publicacion> addPublicacionGustada(@RequestParam String publicacion) {
+	    	String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	Long publi = Long.valueOf(publicacion); 
+	    	Publicacion result = this.service.anadirPublicacionGustada(user, publi);
+	    	if(result == null) {
+	    		 throw new PublicacionNotFoundException();
+	    	}
+	    	return ResponseEntity.status(HttpStatus.CREATED).body(result);
+	    }
+	    
+	    
+	    /**
+	     * Método para obtener las publicaciones que le han gustado a un usuario
+	     * @return Lista de publicaciones
+	     */
+	    @GetMapping("/user/publicacionesGustadas")
+	    public ResponseEntity<List<Publicacion>> getPublicacionesgustadas(){
+	    	 String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	 return ResponseEntity.status(HttpStatus.OK).body(this.service.getPublicacionesgustadas(user));
+	    }
+	    
+	    /**
+	     * Método para borrar una publicacion de la lista de megustas de un usuario
+	     * @param publicacion Publicacion que ha dejado de gustar
+	     * @return La publicacion que ha dejado de gustar
+	     */
+	   @DeleteMapping("user/publicacionesGustadas/{publicacion}")
+	   public ResponseEntity<Publicacion> deletePublicacionGustada(@PathVariable String publicacion){
+	    	 String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	 Long publi = Long.valueOf(publicacion);
+	    	 Publicacion result = this.service.eliminarPublicacionGustada(user, publi);
+	    	 if(result == null) {
+	    		 throw new PublicacionNotFoundException();
+	    	 }
+	    	 return ResponseEntity.status(HttpStatus.OK).body(result);
+	   }
 }

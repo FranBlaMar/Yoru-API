@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -63,11 +64,15 @@ public class User {
 	@JsonBackReference
 	private List<Publicacion> publicaciones;
 	
-	@OneToMany()
+	@ManyToMany()
+	@JsonIgnore
+	private List<Publicacion> publicacionesGustadas;
+	
+	@ManyToMany()
 	@JsonIgnore
 	private List<User> seguidores;
 	
-	@OneToMany()
+	@ManyToMany()
 	@JsonIgnore
 	private List<User> seguidos;
 	
@@ -98,5 +103,9 @@ public class User {
 	
 	public void anadirSeguido(User seguido) {
 		this.seguidos.add(seguido);
+	}
+	
+	public void anadirPublicacionGustada(Publicacion publi) {
+		this.publicacionesGustadas.add(publi);
 	}
 }

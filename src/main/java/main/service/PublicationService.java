@@ -68,4 +68,13 @@ public class PublicationService {
 	public Publicacion editarPublicacion(Publicacion publi) {
 		return this.repositorio.save(publi);
 	}
+	
+	/**
+	 * Método para obtener una publicacion por su id
+	 * @param id id de la publicacion
+	 * @return la publicacion buscada
+	 */
+	public Publicacion findById(Long id) {
+		return this.repositorio.findById(id).orElse(null);
+	}
 }
