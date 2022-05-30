@@ -64,7 +64,7 @@ public class User {
 	@JsonBackReference
 	private List<Publicacion> publicaciones;
 	
-	@ManyToMany()
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<Publicacion> publicacionesGustadas;
 	

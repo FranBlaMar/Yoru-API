@@ -93,6 +93,9 @@ public class UserService implements UserDetailsService {
     	User userAntiguo = this.repository.findById(user.getEmail()).orElse(null);
     	user.setPassword(userAntiguo.getPassword());
     	user.setPublicaciones(userAntiguo.getPublicaciones());
+    	user.setSeguidores(userAntiguo.getSeguidores());
+    	user.setSeguidos(userAntiguo.getSeguidos());
+    	
     	return this.repository.save(user);
     }
     
@@ -210,5 +213,15 @@ public class UserService implements UserDetailsService {
     	user.getPublicacionesGustadas().remove(publi);
     	this.repository.save(user);
     	return publi;
+    }
+    
+    /**
+     * Método para obtener las publicaciones de los usuarios a los que sigue el user logueado
+     * @param email email del usuario logueado
+     * @return lista de publicaciones
+     */
+    public List<Publicacion> obtenerPublicacionesSeguidos(String email){
+    	System.out.println(email);
+    	return this.repository.findAllPublicacionesSeguidos(email);
     }
 }

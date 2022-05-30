@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import main.model.Comentario;
 import main.model.Publicacion;
 import main.model.User;
 import main.repository.PublicacionRepository;
@@ -77,4 +78,42 @@ public class PublicationService {
 	public Publicacion findById(Long id) {
 		return this.repositorio.findById(id).orElse(null);
 	}
+	
+	/**
+	 * Método para eliminar una publicacion mediante su id
+	 * @param id
+	 * @return
+	 */
+	public void borrarPubli(Publicacion publi, String usuario) {
+		User user= this.userService.findById(usuario);
+		user.getPublicaciones().remove(publi);
+		user.getPublicacionesGustadas().remove(publi);
+		user.setNumeroPublicaciones(user.getPublicaciones().size());
+		this.repositorio.delete(publi);
+		this.userService.saveUser(user);
+	}
+	
+	
+    /**
+     * Método para añadir un comentario a una publicacion
+     * @return comentario añadido
+     */
+    public Comentario añadirComentario(Publicacion publi , User user, String cuerpoComentario) {
+    	Comentario coment = new Comentario();
+    	coment.setAutor(user);
+    	coment.setCuerpoComentario(cuerpoComentario);
+    	
+    	publi.addComentario(coment);
+    	this.repositorio.save(publi);
+    	return coment;
+    }
+    
+    /**
+     * Método para obtener los comentarios de una publicaciones
+     * @param publi publicacion
+     * @return lista de comentarios
+     */
+    public List<Comentario> getComentarios(Publicacion publi){
+    	return publi.getComentarios();
+    }
 }
