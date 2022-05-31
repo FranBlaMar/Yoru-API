@@ -250,11 +250,7 @@ public class UserController {
 	     */
 	    @GetMapping("/user/{userName}")
 	    public ResponseEntity<List<User>> getUserPorUserName(@PathVariable String userName) throws UserNotFoundEmailException{ 	
-	        List<User> result = this.service.findByUserName(userName);
-	        if(result.isEmpty()) {
-	        	throw new UserNotFoundEmailException();
-	        }
-	        return ResponseEntity.status(HttpStatus.OK).body(result);
+	        return ResponseEntity.status(HttpStatus.OK).body(this.service.findByUserName(userName));
 	    }
 	    
 	    /**
@@ -276,9 +272,6 @@ public class UserController {
 	    @GetMapping("/user/follower/{usuarioComprobar}")
 	    public ResponseEntity<User> comprobarSiEsSeguidor(@PathVariable String usuarioComprobar){
 	    	 String usuarioLogueado = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	    	 if(this.service.findSeguido(usuarioLogueado, usuarioComprobar) == null) {
-	    		 throw new UserNotFoundEmailException();
-	    	 }
 	    	 return ResponseEntity.status(HttpStatus.OK).body(this.service.findSeguido(usuarioLogueado, usuarioComprobar));
 	    }
 	    
