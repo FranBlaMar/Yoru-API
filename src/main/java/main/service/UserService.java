@@ -221,7 +221,6 @@ public class UserService implements UserDetailsService {
      * @return lista de publicaciones
      */
     public List<Publicacion> obtenerPublicacionesSeguidos(String email){
-    	System.out.println(email);
     	return this.repository.findAllPublicacionesSeguidos(email);
     }
 }

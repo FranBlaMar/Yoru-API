@@ -306,7 +306,7 @@ public class UserController {
 	    @DeleteMapping("/user/follower/{seguido}")
 	    public ResponseEntity<User> unfollowUser(@PathVariable String seguido){
 	    	 String seguidor = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.dejarDeSeguirUsuario(seguidor, seguido));
+	    	 return ResponseEntity.status(HttpStatus.OK).body(this.service.dejarDeSeguirUsuario(seguidor, seguido));
 	    }
 	    
 	    

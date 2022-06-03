@@ -89,6 +89,8 @@ public class PublicationService {
 		user.getPublicaciones().remove(publi);
 		user.getPublicacionesGustadas().remove(publi);
 		user.setNumeroPublicaciones(user.getPublicaciones().size());
+		this.repositorio.deletePublicacionEnPublicacionesGustadas(publi.getIdPublicacion());
+		
 		this.repositorio.delete(publi);
 		this.userService.saveUser(user);
 	}

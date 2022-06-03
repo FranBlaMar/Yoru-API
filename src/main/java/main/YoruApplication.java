@@ -30,7 +30,13 @@ public class YoruApplication {
 			us1.setNumeroSeguidores(0);
 			us1.setNumeroSeguidos(0);
 			us1.setAboutMe("Cuenta oficila de Yoru. Conecta con tus amigos.");
+			User us2 = new User("David",encoder.encode("123"), "franbl984@gmail.com", "", null);
+			us2.setNumeroPublicaciones(0);
+			us2.setNumeroSeguidores(0);
+			us2.setNumeroSeguidos(0);
+			us2.setAboutMe("cuenta personal de David, encantado!");
 			userRepository.save(us1);
+			userRepository.save(us2);
 		};
 	}
 	
