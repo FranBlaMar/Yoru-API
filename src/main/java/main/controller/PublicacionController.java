@@ -96,13 +96,12 @@ public class PublicacionController {
 	@DeleteMapping("/publicacion/{idPubli}")
 	public ResponseEntity<Publicacion> borrarPublicacion(@PathVariable String idPubli) {
 		Long id = Long.valueOf(idPubli);
-		String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		Publicacion publi = this.publicationService.findById(id);
 		if( publi == null) {
 			throw new PublicacionNotFoundException();
 		}
-		this.publicationService.borrarPubli(publi, user);
+		this.publicationService.borrarPubli(publi);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(publi);
 	}

@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -77,8 +76,9 @@ public class User {
 	@JsonIgnore
 	private List<User> seguidos;
 	
+	private String role;
 	
-	public User(String userName,String password, String email, String aboutMe, byte[] fotoPerfil){
+	public User(String userName,String password, String email, String aboutMe, byte[] fotoPerfil, String role){
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
@@ -92,6 +92,7 @@ public class User {
 		this.numeroPublicaciones = 0;
 		this.numeroSeguidores = 0;
 		this.numeroSeguidos = 0;
+		this.role = role;
 	}
 
 	public void anadirPublicacion(Publicacion publi) {

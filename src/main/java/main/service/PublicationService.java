@@ -84,8 +84,8 @@ public class PublicationService {
 	 * @param id
 	 * @return
 	 */
-	public void borrarPubli(Publicacion publi, String usuario) {
-		User user= this.userService.findById(usuario);
+	public void borrarPubli(Publicacion publi) {
+		User user= publi.getAutor();
 		user.getPublicaciones().remove(publi);
 		user.getPublicacionesGustadas().remove(publi);
 		user.setNumeroPublicaciones(user.getPublicaciones().size());

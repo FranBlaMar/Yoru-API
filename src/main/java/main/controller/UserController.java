@@ -87,7 +87,7 @@ public class UserController {
 	        String encodedPass = passwordEncoder.encode(password);
 	        User usuarioNuevo = null;
 			try {
-				usuarioNuevo = new User(userName, encodedPass ,email, "", file.getBytes());
+				usuarioNuevo = new User(userName, encodedPass ,email, "", file.getBytes(), "USER");
 			} catch (IOException e) {
 				throw new FormatErrorException();
 			}
@@ -130,7 +130,7 @@ public class UserController {
 	     * @return Codigo de verirficacion generado
 	     * @throws MessagingException
 	     */
-	    @PostMapping("auth/verification")
+	    @PostMapping("/auth/verification")
 	    public ResponseEntity<Integer> emailVerify(@RequestBody String email) throws MessagingException{
 
 	    	if(this.service.comprobarCorreo(email)) {

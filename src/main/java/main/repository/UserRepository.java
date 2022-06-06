@@ -13,6 +13,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 	
 	public List<User> findByUserName(String userName);
 	
-	@Query("SELECT p FROM Publicacion p, User u JOIN u.seguidos s WHERE u.email = :idUsuario AND s.email = p.autor.email")
+	@Query("SELECT p FROM Publicacion p, User u JOIN u.seguidos s WHERE u.email = :idUsuario AND s.email = p.autor.email ORDER BY p.fechaPublicacion")
 	public List<Publicacion> findAllPublicacionesSeguidos(String idUsuario);
 }

@@ -25,12 +25,12 @@ public class YoruApplication {
 	CommandLineRunner initData(UserRepository userRepository) {
 		return args -> {
 			
-			User us1 = new User("Yoru",encoder.encode("123"), "franbl98@gmail.com", "", null);
+			User us1 = new User("Yoru",encoder.encode("123"), "franbl98@gmail.com", "", null, "ADMIN");
 			us1.setNumeroPublicaciones(0);
 			us1.setNumeroSeguidores(0);
 			us1.setNumeroSeguidos(0);
 			us1.setAboutMe("Cuenta oficila de Yoru. Conecta con tus amigos.");
-			User us2 = new User("David",encoder.encode("123"), "franbl984@gmail.com", "", null);
+			User us2 = new User("David",encoder.encode("123"), "franbl984@gmail.com", "", null, "USER");
 			us2.setNumeroPublicaciones(0);
 			us2.setNumeroSeguidores(0);
 			us2.setNumeroSeguidos(0);
