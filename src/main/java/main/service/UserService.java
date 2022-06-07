@@ -1,15 +1,19 @@
 package main.service;
 
+import java.awt.print.Pageable;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import main.model.Publicacion;
 import main.model.User;
@@ -220,7 +224,23 @@ public class UserService implements UserDetailsService {
      * @param email email del usuario logueado
      * @return lista de publicaciones
      */
-    public List<Publicacion> obtenerPublicacionesSeguidos(String email){
-    	return this.repository.findAllPublicacionesSeguidos(email);
+    public List<Publicacion> obtenerPublicacionesSeguidos(String email, int offSet){
+    	return this.repository.findAllPublicacionesSeguidos(email, PageRequest.of(offSet, 10));
+    }
+    
+    /**
+     * Método para editar la foto de perfil de un usuario
+     * @param user Usuario
+     * @param file Foto de perfil
+     * @return Usuario editado
+     */
+    public User cambiarFotoPerfil(User user, MultipartFile file) {
+    	try {
+    		user.setFotoPerfil(file.getBytes());
+			this.saveUser(user);
+			return user;
+		} catch (IOException e) {
+			return null;
+		}
     }
 }

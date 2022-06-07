@@ -77,7 +77,6 @@ public class UserController {
 	    @PostMapping("/auth/register")
 	    public Map<String, Object> registerHandler(@RequestParam String userName,@RequestParam String password, @RequestParam String email, @RequestParam("file") MultipartFile file) throws FormatErrorException, ExistingUserException{
 	    	User verificar = this.service.findById(email);
-	    	System.out.println(file);
 	    	if(verificar != null) {
 	    		throw new ExistingUserException();
 	    	}	
@@ -342,7 +341,7 @@ public class UserController {
 	     * @param publicacion Publicacion que ha dejado de gustar
 	     * @return La publicacion que ha dejado de gustar
 	     */
-	   @DeleteMapping("user/publicacionesGustadas/{publicacion}")
+	   @DeleteMapping("/user/publicacionesGustadas/{publicacion}")
 	   public ResponseEntity<Publicacion> deletePublicacionGustada(@PathVariable String publicacion){
 	    	 String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	    	 Long publi = Long.valueOf(publicacion);
@@ -354,16 +353,34 @@ public class UserController {
 	   }
 	   
 	   /**
+	    * Método para editar la foto de perfil de un usuario
+	    * @param file foto de perfil
+	    * @return usuario editado
+	    */
+	   @PutMapping("/user/fotoPerfil")
+	   public ResponseEntity<User> editarfotoPerfil(@RequestParam("file") MultipartFile file){
+		   String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		   if(!file.getContentType().equals("image/jpeg") && !file.getContentType().equals("image/png")) {
+				throw new FormatErrorException();
+			}
+		   User us = this.service.findById(user);
+	        if(us == null) {
+	        	throw new UserNotFoundEmailException();
+	        }
+	        return ResponseEntity.status(HttpStatus.OK).body(this.service.cambiarFotoPerfil(us, file));
+	   }
+	   
+	   /**
 	    * Método para obtener las publicaciones de los usuarios a los que sigue el user logueado
 	    * @return lista de publicaciones
 	    */
-	   @GetMapping("user/follower/publicacion")
-	   public ResponseEntity<List<Publicacion>> getAllPublicacionesSeguidos(){
+	   @GetMapping("/user/follower/publicacion/{offSet}")
+	   public ResponseEntity<List<Publicacion>> getAllPublicacionesSeguidos(@PathVariable Integer offSet){
 		   String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		   User us = this.service.findById(user);
 	        if(us == null) {
 	        	throw new UserNotFoundEmailException();
 	        }
-	        return ResponseEntity.status(HttpStatus.OK).body(this.service.obtenerPublicacionesSeguidos(user));
+	        return ResponseEntity.status(HttpStatus.OK).body(this.service.obtenerPublicacionesSeguidos(user, offSet));
 	   }
 }

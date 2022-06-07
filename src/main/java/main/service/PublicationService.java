@@ -58,7 +58,7 @@ public class PublicationService {
 	 */
 	public List<Publicacion> findByUser(String email){
 		User us = this.userService.findById(email);
-		return this.repositorio.findByAutor(us);
+		return this.repositorio.findByAutorOrderByFechaPublicacion(us);
 	}
 	
 	/**
