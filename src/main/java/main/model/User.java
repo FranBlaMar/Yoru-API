@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -76,6 +77,9 @@ public class User {
 	@JsonIgnore
 	private List<User> seguidos;
 	
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Hobbie hobbie;
+	
 	private String role;
 	
 	public User(String userName,String password, String email, String aboutMe, byte[] fotoPerfil, String role){
@@ -110,4 +114,6 @@ public class User {
 	public void anadirPublicacionGustada(Publicacion publi) {
 		this.publicacionesGustadas.add(publi);
 	}
+	
+
 }

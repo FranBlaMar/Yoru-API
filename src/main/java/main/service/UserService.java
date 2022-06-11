@@ -1,6 +1,5 @@
 package main.service;
 
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -15,8 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import main.model.Hobbie;
 import main.model.Publicacion;
 import main.model.User;
+import main.repository.HobbieRepository;
 import main.repository.UserRepository;
 
 
@@ -32,7 +33,9 @@ public class UserService implements UserDetailsService {
     private UserRepository repository;
     @Autowired
     private PublicationService servicio;
-   
+    @Autowired
+    private HobbieRepository repositoryHobbie;
+    
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Optional<User> userRes = repository.findById(userName);
@@ -99,6 +102,7 @@ public class UserService implements UserDetailsService {
     	user.setPublicaciones(userAntiguo.getPublicaciones());
     	user.setSeguidores(userAntiguo.getSeguidores());
     	user.setSeguidos(userAntiguo.getSeguidos());
+    	user.setPublicacionesGustadas(userAntiguo.getPublicacionesGustadas());
     	
     	return this.repository.save(user);
     }
@@ -242,5 +246,31 @@ public class UserService implements UserDetailsService {
 		} catch (IOException e) {
 			return null;
 		}
+    }
+    
+    /**
+     * Método para obtener hobbie mediante su nombre
+     * @param hobbie nombre del hobbie
+     * @return Objeto hobbie
+     */
+    public Hobbie buscarHobbiePorNombre(String hobbie) {
+    	return this.repositoryHobbie.findHobbieByHobbie(hobbie).get(0);
+    }
+    
+    /**
+     * Método para buscar usuarios segun su hobbie
+     * @param hobbie hobbie buscado
+     * @return lista de usuarios
+     */
+    public List<User> buscarUsersPorHobbie(String hobbie, Integer offSet){
+    	return this.repository.findUserByHobbie(hobbie, PageRequest.of(offSet, 3));
+    }
+    
+    /**
+     * Método para obtener todos los hobbies
+     * @return lista de hobbies
+     */
+    public List<Hobbie> findAllHobbies(){
+    	return this.repositoryHobbie.findAll();
     }
 }

@@ -31,9 +31,11 @@ import main.exception.ErrorManager;
 import main.exception.ExistingEmailException;
 import main.exception.ExistingUserException;
 import main.exception.FormatErrorException;
+import main.exception.HobbieNotFoundException;
 import main.exception.PublicacionNotFoundException;
 import main.exception.UserNotFoundEmailException;
 import main.exception.UserNotFoundPasswordException;
+import main.model.Hobbie;
 import main.model.Publicacion;
 import main.model.User;
 import main.model.UserLogin;
@@ -212,6 +214,20 @@ public class UserController {
 		}
 	    
 	    /**
+		 * Metodo handler de exception de hobbie no encontrado
+		 * @param ex excepción lanzada
+		 * @return Excepción modificada por nosotros
+		 */
+	    @ExceptionHandler(HobbieNotFoundException.class)
+		public ResponseEntity<ErrorManager> handleHobbieNotFound(HobbieNotFoundException ex) {
+	    	ErrorManager apiError = new ErrorManager();
+			apiError.setRequestStatus(HttpStatus.NOT_FOUND);
+			apiError.setDate(LocalDateTime.now());
+			apiError.setErrorMessage(ex.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+		}
+	    
+	    /**
 		 * Metodo handler de exception de correo ya existente
 		 * @param ex excepción lanzada
 		 * @return Excepción modificada por nosotros
@@ -259,6 +275,7 @@ public class UserController {
 	     */
 	    @PutMapping("/user")
 	    public ResponseEntity<User> putUser(@RequestBody User usuario) {
+	    	System.out.println(usuario.getHobbie());
 	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.editarUsuario(usuario));
 	    }
 	    
@@ -383,4 +400,28 @@ public class UserController {
 	        }
 	        return ResponseEntity.status(HttpStatus.OK).body(this.service.obtenerPublicacionesSeguidos(user, offSet));
 	   }
+	   
+	   /**
+	    * Método para obtener usuarios mediante su hobbie
+	    * @param hobbie hobbie del usuario
+	    * @param offSet Pagination
+	    * @return Lista de usuarios
+	    */
+	   @GetMapping("/user/{hobbie}/{offSet}")
+	   public ResponseEntity<List<User>> getUsersByHobbie(@PathVariable String hobbie, @PathVariable Integer offSet){
+		   if(this.service.buscarHobbiePorNombre(hobbie.toUpperCase()) == null) {
+			   throw new HobbieNotFoundException();
+		   }
+	       return ResponseEntity.status(HttpStatus.OK).body(this.service.buscarUsersPorHobbie(hobbie.toUpperCase(), offSet));
+	   }
+	   
+	   /**
+	    * Método para obtener todos los hobbies
+	    * @return lista de hobbies
+	    */
+	   @GetMapping("/hobbie")
+	   public ResponseEntity<List<Hobbie>> getAllHobbies(){
+	       return ResponseEntity.status(HttpStatus.OK).body(this.service.findAllHobbies());
+	   }
+	   
 }

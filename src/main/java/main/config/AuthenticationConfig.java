@@ -36,7 +36,9 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/{userName}").permitAll()
                 .antMatchers("/publicacion/**").hasRole("USER")
                 .antMatchers("/user/**").hasRole("USER")
+                .antMatchers("/hobbie").hasRole("USER")
                 .antMatchers("/**").hasRole("ADMIN")
+                
                 .and()
                 .userDetailsService(service)
                 .exceptionHandling()
