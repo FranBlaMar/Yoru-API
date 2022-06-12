@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,6 +48,7 @@ public class User {
 	
 	@Column (name="fotoPerfil")
 	@Lob
+	@Type(type = "org.hibernate.type.ImageType")
 	private byte[] fotoPerfil;
 	
 	@Column (name="descripcion")

@@ -17,6 +17,6 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
 	
 	@Transactional
 	@Modifying //Para indicar que la query va a modificar la base de datos
-	@Query(value= "DELETE FROM yoru.usuario_publicaciones_gustadas WHERE publicaciones_gustadas_id_publicacion = ?1", nativeQuery = true)
+	@Query(value= "DELETE FROM usuario_publicaciones_gustadas WHERE publicaciones_gustadas_id_publicacion = ?1", nativeQuery = true)
 	public void deletePublicacionEnPublicacionesGustadas(Long idPublicacion);
 }

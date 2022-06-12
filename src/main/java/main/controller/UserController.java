@@ -275,7 +275,6 @@ public class UserController {
 	     */
 	    @PutMapping("/user")
 	    public ResponseEntity<User> putUser(@RequestBody User usuario) {
-	    	System.out.println(usuario.getHobbie());
 	    	 return ResponseEntity.status(HttpStatus.CREATED).body(this.service.editarUsuario(usuario));
 	    }
 	    
