@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	
 	public List<User> findByUserName(String userName);
 	
-	@Query("SELECT p FROM Publicacion p, User u JOIN u.seguidos s WHERE u.email =:idUsuario AND s.email = p.autor.email ORDER BY p.fechaPublicacion DESC")
+	@Query("SELECT p FROM Publicacion p, User u JOIN u.seguidos s WHERE u.email =:idUsuario AND s.email = p.autor.email ORDER BY p.fechaPublicacion")
 	public List<Publicacion> findAllPublicacionesSeguidos(@Param("idUsuario")String idUsuario, Pageable pageable);
 	
 	@Query("SELECT u FROM User u JOIN u.hobbie h WHERE h.hobbie =:hobbie")
