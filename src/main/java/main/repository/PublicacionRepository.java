@@ -13,7 +13,7 @@ import main.model.User;
 
 public interface PublicacionRepository extends JpaRepository<Publicacion, Long> {
 	
-	public List<Publicacion> findByAutorOrderByFechaPublicacionDesc(User us);
+	public List<Publicacion> findByAutorOrderByFechaPublicacion(User us);
 	
 	@Transactional
 	@Modifying //Para indicar que la query va a modificar la base de datos
